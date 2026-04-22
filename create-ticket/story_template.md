@@ -2,11 +2,6 @@
 
 <Why this work is needed and who benefits.>
 
-## Requirements
-
-- <Requirement 1>
-- <Requirement 2>
-
 ## Scope / Non-goals
 
 - In scope: <What this ticket delivers>
