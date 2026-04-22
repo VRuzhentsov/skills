@@ -1,6 +1,6 @@
 ---
 name: start-ticket
-description: Bootstrap implementation planning from Jira or GitHub tickets using provider-aware context fetch, clarifying questions, and repo exploration. Trigger on start/plan ticket prompts, ticket URLs, or ticket keys.
+description: Bootstrap implementation planning when the user explicitly wants to start, plan, implement, or work on a work item. Do not use this skill for simple fetch, view, read, or summary requests.
 ---
 
 # Start Ticket
