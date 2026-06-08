@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# Restore the exact opencode session that was previously in this tmux pane.
+#
+# Wire this script into tmux-resurrect's @resurrect-processes via the
+# program->restore_command syntax so each restored pane runs this instead of
+# plain `opencode`:
+#
+#   set -g @resurrect-processes '... "opencode->opencode-tmux-resume"'
+#
+# How it works:
+#   1. The pane's own tmux address (session + window + pane indices) is read
+#      from the live tmux client.
+#   2. The matching `pane` row is located in the tmux-resurrect save file by
+#      that address. tmux-resurrect persists the pane title in column 7
+#      (see ~/.tmux/plugins/tmux-resurrect/scripts/save.sh::pane_format),
+#      and opencode writes its session title to the terminal title as
+#      `OC | <session title>` — so the saved title is everything we need to
+#      identify the original opencode session.
+#   3. The git project root commit hash for the current directory matches
+#      opencode's project ID (it stores sessions per project under
+#      ~/.local/share/opencode/storage/session/<project>/<session>.json).
+#      Each JSON has a `.title` field; the one matching the saved title is
+#      the session this pane was running.
+#   4. If found, exec `opencode --session <id>` to resume that exact
+#      conversation. If anything is missing or ambiguous, fall back to
+#      `opencode --continue` — the previous-iteration behaviour — so the
+#      user is never worse off than without this wrapper.
+
+set -u
+
+RESURRECT_FILE="$HOME/.local/state/tmux/resurrect/last"
+
+try_resume_specific_session() {
+  command -v tmux >/dev/null 2>&1 || return 1
+  command -v jq   >/dev/null 2>&1 || return 1
+  command -v git  >/dev/null 2>&1 || return 1
+  [ -f "$RESURRECT_FILE" ] || return 1
+
+  local session window pane
+  session=$(tmux display-message -p '#{session_name}' 2>/dev/null) || return 1
+  window=$(tmux display-message  -p '#{window_index}' 2>/dev/null) || return 1
+  pane=$(tmux display-message    -p '#{pane_index}'   2>/dev/null) || return 1
+  [ -n "$session" ] && [ -n "$window" ] && [ -n "$pane" ] || return 1
+
+  # Resurrect pane_format columns (verified from save.sh::pane_format):
+  #   1=pane  2=session_name  3=window_index  4=window_active
+  #   5=:window_flags  6=pane_index  7=pane_title  8=:pane_current_path
+  #   9=pane_active  10=pane_current_command  11=pane_pid  12=history_size
+  local saved_title
+  saved_title=$(awk -F'\t' -v s="$session" -v w="$window" -v p="$pane" \
+    '$1=="pane" && $2==s && $3==w && $6==p {print $7; exit}' \
+    "$RESURRECT_FILE")
+  [ -n "$saved_title" ] || return 1
+
+  # opencode terminal title format is "OC | <session title>". If the saved
+  # title doesn't carry that prefix the pane wasn't an opencode pane (or
+  # opencode hadn't set a title yet at save time) — bail out to --continue.
+  local oc_title="${saved_title#OC | }"
+  [ "$oc_title" != "$saved_title" ] || return 1
+
+  local project_hash
+  project_hash=$(git rev-list --max-parents=0 HEAD 2>/dev/null | head -n 1)
+  [ -n "$project_hash" ] || return 1
+
+  local session_dir="$HOME/.local/share/opencode/storage/session/$project_hash"
+  [ -d "$session_dir" ] || return 1
+  compgen -G "$session_dir"/*.json >/dev/null 2>&1 || return 1
+
+  local session_id
+  session_id=$(jq -rs --arg t "$oc_title" \
+    '[.[] | select(.title == $t)] | first | .id // empty' \
+    "$session_dir"/*.json 2>/dev/null)
+  [ -n "$session_id" ] || return 1
+
+  exec opencode --session "$session_id"
+}
+
+try_resume_specific_session || true
+exec opencode --continue

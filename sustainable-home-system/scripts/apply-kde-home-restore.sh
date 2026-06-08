@@ -22,7 +22,7 @@ require() {
 require_installed_skill() {
   if [ "$skill_dir" != "$installed_skill_dir" ]; then
     printf '%s\n' "Refusing to run from: $skill_dir" >&2
-    printf '%s\n' "Install the skill first, then run: $installed_skill_dir/scripts/apply-fedora-kde-home-restore.sh" >&2
+    printf '%s\n' "Install the skill first, then run: $installed_skill_dir/scripts/apply-kde-home-restore.sh" >&2
     exit 2
   fi
 }
@@ -99,6 +99,11 @@ configure_tmux() {
   # Install the per-tab session manager script.
   install_template "$skill_dir/scripts/tmux-auto-attach" "$HOME/.local/bin/tmux-auto-attach"
   chmod +x "$HOME/.local/bin/tmux-auto-attach"
+
+  # Install the per-pane opencode resume wrapper used by @resurrect-processes
+  # so that restored opencode panes resume their previous conversation.
+  install_template "$skill_dir/scripts/opencode-tmux-resume" "$HOME/.local/bin/opencode-tmux-resume"
+  chmod +x "$HOME/.local/bin/opencode-tmux-resume"
 
   log "Configured tmux per-tab auto-attach"
 }
@@ -178,7 +183,7 @@ verify_setup() {
 
 main() {
   require_installed_skill
-  log "Applying Sustainable Home System restore setup for Fedora KDE/Bazzite/Kinoite"
+  log "Applying Sustainable Home System restore setup for KDE Plasma"
   configure_kde_session_restore
   configure_browser_restore
   configure_tmux

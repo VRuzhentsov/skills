@@ -1,11 +1,11 @@
 ---
 name: sustainable-home-system
-description: Configure a resilient Fedora Kinoite/Bazzite/KDE home workstation so terminal sessions, desktop windows, browser tabs, and selected app workspaces recover after accidental closes, logout/login, reboot, or crash as much as Linux realistically allows. Use this skill whenever the user wants a sustainable desktop/home system, worries about losing workflow after reboot, wants KDE session restore, browser tab restore, tmux terminal persistence, or wants to reproduce this setup on another Fedora Atomic machine.
+description: Configure a resilient KDE Plasma home workstation so terminal sessions, desktop windows, browser tabs, and selected app workspaces recover after accidental closes, logout/login, reboot, or crash as much as Linux realistically allows. Use this skill whenever the user wants a sustainable desktop/home system, worries about losing workflow after reboot, wants KDE session restore, browser tab restore, tmux terminal persistence, or wants to reproduce this setup on another KDE Plasma machine.
 ---
 
 # Sustainable Home System
 
-Make a Linux desktop safe to reboot by layering restore mechanisms. This is intended to be useful as a public, portable skill for Fedora KDE users who want less fragile workstation state.
+Make a Linux desktop safe to reboot by layering restore mechanisms. This is intended to be useful as a public, portable skill for KDE Plasma users who want less fragile workstation state.
 
 - KDE restores the desktop session and reopens windows where apps support it.
 - The user's selected browser restores tabs where the browser supports "continue where you left off".
@@ -16,7 +16,7 @@ Make a Linux desktop safe to reboot by layering restore mechanisms. This is inte
 - A user systemd service starts the tmux server at login and triggers the resurrect restore, so sessions are ready before any Konsole tab opens.
 - Terminal recovery must preserve the user's visual profile. Do not replace a dark/translucent terminal with a light default profile.
 
-This skill targets Fedora Atomic desktops first: Bazzite and Kinoite on KDE Plasma. Treat other Linux desktops as adaptations of the same model. Keep instructions public-safe: avoid private usernames, machine-specific paths, account details, and personal workflow assumptions unless the current user explicitly asks for them.
+This skill targets KDE Plasma. Treat other Linux desktops as adaptations of the same model. Keep instructions public-safe: avoid private usernames, machine-specific paths, account details, and personal workflow assumptions unless the current user explicitly asks for them.
 
 ## Reality Check
 
@@ -49,7 +49,7 @@ konsole --list-profiles
 grep -R "ColorScheme" ~/.local/share/konsole /usr/share/konsole 2>/dev/null
 ```
 
-If the user already uses a dark or translucent profile, copy its `ColorScheme` into the restorable tmux profile. The bundled `RestorableTmux.profile` uses `ColorScheme=Linux` which is a built-in dark scheme available in every Konsole install. On Bazzite/KDE, `Vapor` is a common dark translucent profile but is not available on Fedora Kinoite.
+If the user already uses a dark or translucent profile, copy its `ColorScheme` into the restorable tmux profile. The bundled `RestorableTmux.profile` uses `ColorScheme=Linux` which is a built-in dark scheme available in every Konsole install. Some distributions also ship `Vapor` (a dark translucent profile) — use it where present, otherwise stick with `Linux`.
 
 For browsers, first identify what is installed and what the user wants restored. Then check only relevant profile locations. Common Chromium-family preference files include:
 
@@ -70,19 +70,20 @@ Avoid reading or exposing unrelated account/profile details from browser prefere
 
 ## Use The Bundled Installer
 
-For Fedora Kinoite/Bazzite/KDE, prefer the installed skill script:
+For KDE Plasma, prefer the installed skill script:
 
 ```bash
-~/.agents/skills/sustainable-home-system/scripts/apply-fedora-kde-home-restore.sh
+~/.agents/skills/sustainable-home-system/scripts/apply-kde-home-restore.sh
 ```
 
-The script intentionally refuses to run from a Git checkout. Install the skill first, then run the installed copy. This prevents accidental execution of mutable repo working-tree scripts. The installed script applies user-level configuration only. It does not use `sudo`, does not layer packages with `rpm-ostree`, and does not overwrite files without backups. That keeps it suitable for public reuse on immutable Fedora-style systems.
+The script intentionally refuses to run from a Git checkout. Install the skill first, then run the installed copy. This prevents accidental execution of mutable repo working-tree scripts. The installed script applies user-level configuration only. It does not use `sudo`, does not install system packages, and does not overwrite files without backups. That keeps it suitable for public reuse on any KDE Plasma desktop, including immutable distributions.
 
 Bundled resources:
 
-- `scripts/apply-fedora-kde-home-restore.sh` - applies KDE, selected Chromium-family browser, Konsole, tmux, and user systemd settings.
+- `scripts/apply-kde-home-restore.sh` - applies KDE, selected Chromium-family browser, Konsole, tmux, and user systemd settings.
 - `scripts/browser-restore-enforcer.sh` - login-time Chromium-family browser startup restore enforcer with common-path discovery and an explicit override variable for non-standard preference files.
 - `scripts/tmux-auto-attach` - per-tab tmux session manager: auto-creates or reattaches to a tmux session named by working directory. Used as the Konsole profile command.
+- `scripts/opencode-tmux-resume` - per-pane opencode session restore wrapper used by `@resurrect-processes`. Reads the saved pane title from the tmux-resurrect file and resumes the matching opencode session by ID. See "Per-pane opencode resume" below for the mechanism.
 - `templates/tmux.conf` - tmux persistence config.
 - `templates/RestorableTmux.profile` - Konsole profile that runs `tmux-auto-attach`.
 - `templates/tmux-main-session` - login helper script that starts the tmux server.
@@ -100,6 +101,25 @@ If not using the script, apply the same layers manually:
 5. Configure Konsole default profile to run `~/.local/bin/tmux-auto-attach` while preserving the user's existing color scheme/transparency.
 6. Add a user systemd oneshot service that starts the tmux server at login and explicitly calls `~/.tmux/plugins/tmux-resurrect/scripts/restore.sh`. Set `@continuum-restore 'off'` so restore only fires at login, not on arbitrary server starts.
 7. Save a tmux-resurrect snapshot and verify restore files exist.
+
+## Per-Pane Opencode Resume
+
+When a Konsole tab is running opencode, tmux-resurrect alone would only restart `opencode` after a reboot — a blank new session, not the previous conversation. The bundled `opencode-tmux-resume` wrapper closes that gap so each pane resumes its exact previous session, even when several Konsole tabs were open in the same git repo.
+
+How it works:
+
+- opencode writes its session title to the terminal title as `OC | <session title>`.
+- tmux-resurrect's save format stores that pane title (`pane_title` is column 7 of every `pane` row in the resurrect save file).
+- After reboot, `opencode-tmux-resume` looks up its own tmux address (session + window + pane indices), pulls the saved title from the resurrect file, and finds the matching opencode session JSON under `~/.local/share/opencode/storage/session/<project-hash>/`. opencode's project hash is the git initial commit hash for the current directory, so the lookup is scoped to the right project automatically.
+- If a match is found the wrapper execs `opencode --session <id>`. Otherwise it falls back to `opencode --continue`, so the worst case is "last session for this project" — never a crash and never a worse-than-default behaviour.
+
+To wire it in, `templates/tmux.conf` uses the custom restore-command syntax in `@resurrect-processes`:
+
+```
+set -g @resurrect-processes '... "opencode->opencode-tmux-resume"'
+```
+
+This is generic enough to extend to other TUIs that publish a stable terminal title (Aider, AIChat, etc.) by adding their own resume wrappers and matching entries.
 
 ## Verification
 
