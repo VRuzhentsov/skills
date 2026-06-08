@@ -1,5 +1,5 @@
 [Unit]
-Description=Start durable tmux main session
+Description=Start tmux server at login
 
 [Service]
 Type=oneshot

@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# tmux-auto-attach: per-tab tmux session manager.
+#
+# Each Konsole tab runs this script as its shell command. It creates or
+# reattaches to a tmux session named after the working directory basename.
+# If multiple tabs share the same directory, they get indexed names
+# (e.g. "foo", "foo-2", "foo-3"). After reboot, KDE restores Konsole tabs
+# with their saved working directories, and this script reattaches each tab
+# to its matching tmux session (restored by tmux-resurrect).
+#
+# Usage: set as the Konsole profile command with no arguments.
+
+set -euo pipefail
+
+# Derive a safe tmux session name from the current working directory basename.
+# Replaces characters not allowed in tmux session names with dashes.
+base_name() {
+  local dir
+  dir="$(basename -- "$PWD")"
+  # Replace dots, colons, and whitespace with dashes; collapse repeated dashes.
+  dir="${dir//[.:]/-}"
+  dir="$(printf '%s' "$dir" | tr -s ' \t' '-')"
+  # Trim leading/trailing dashes.
+  dir="${dir#-}"
+  dir="${dir%-}"
+  # Fallback if name is empty (e.g. running at filesystem root).
+  printf '%s' "${dir:-terminal}"
+}
+
+# Find an unattached tmux session matching the given base name or base-N pattern.
+# Prints the session name if found, empty string if not.
+find_unattached_session() {
+  local base="$1"
+  # List all sessions: name attached_count
+  while IFS= read -r line; do
+    local name attached
+    name="$(printf '%s' "$line" | cut -d: -f1)"
+    attached="$(printf '%s' "$line" | cut -d: -f2)"
+    # Match exact name or name-N pattern.
+    if [[ "$name" == "$base" || "$name" =~ ^"$base"-[0-9]+$ ]]; then
+      if [ "$attached" = "0" ]; then
+        printf '%s' "$name"
+        return 0
+      fi
+    fi
+  done < <(tmux list-sessions -F '#{session_name}:#{session_attached}' 2>/dev/null || true)
+  return 1
+}
+
+# Find the next available indexed name: base, base-2, base-3, ...
+next_session_name() {
+  local base="$1"
+  # Check if bare name is taken.
+  if ! tmux has-session -t "$base" 2>/dev/null; then
+    printf '%s' "$base"
+    return 0
+  fi
+  local i=2
+  while tmux has-session -t "${base}-${i}" 2>/dev/null; do
+    (( i++ ))
+  done
+  printf '%s' "${base}-${i}"
+}
+
+main() {
+  local base
+  base="$(base_name)"
+
+  # Prefer reattaching to an unattached session matching this directory.
+  local target
+  if target="$(find_unattached_session "$base")" && [ -n "$target" ]; then
+    exec tmux attach-session -t "$target"
+  fi
+
+  # No unattached session found — create a new one.
+  local new_name
+  new_name="$(next_session_name "$base")"
+  exec tmux new-session -s "$new_name"
+}
+
+main "$@"

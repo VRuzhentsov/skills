@@ -1,11 +1,10 @@
 [General]
 Name=Restorable Tmux
-Command=/usr/bin/tmux
-Arguments=new-session,-A,-s,main
+Command=__HOME__/.local/bin/tmux-auto-attach
 Directory=__HOME__
 LocalTabTitleFormat=%d: %n
 HistoryMode=2
 HistorySize=200000
 
 [Appearance]
-ColorScheme=Vapor
+ColorScheme=Linux

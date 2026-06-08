@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
+# Start the tmux server at login so sessions are ready before Konsole opens.
+# Per-tab sessions are created by ~/.local/bin/tmux-auto-attach, not here.
 set -euo pipefail
 
-if /usr/bin/tmux has-session -t main 2>/dev/null; then
-  exit 0
+# Starting a throwaway session and immediately detaching is the simplest
+# way to ensure the tmux server is running without leaving a named session
+# that Konsole tabs would attach to.
+if ! /usr/bin/tmux info >/dev/null 2>&1; then
+  /usr/bin/tmux start-server
 fi
-
-exec /usr/bin/tmux new-session -d -s main

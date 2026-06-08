@@ -89,15 +89,18 @@ configure_tmux() {
   fi
 
   "$HOME/.tmux/plugins/tpm/bin/install_plugins" || true
-  if tmux new-session -Ad -s main; then
-    tmux source-file "$HOME/.tmux.conf" || log "tmux config will finish loading from the next interactive tmux client."
-    if [ -x "$HOME/.tmux/plugins/tmux-resurrect/scripts/save.sh" ]; then
-      "$HOME/.tmux/plugins/tmux-resurrect/scripts/save.sh" || log "tmux snapshot save skipped in this non-interactive shell; use Ctrl+b Ctrl+s inside tmux."
-    fi
-  else
-    log "tmux session creation failed in this non-interactive shell; open a terminal and run: tmux new-session -A -s main"
+
+  # Start the tmux server so plugins load; per-tab sessions are created by tmux-auto-attach.
+  if ! tmux info >/dev/null 2>&1; then
+    tmux start-server || true
   fi
-  log "Configured tmux durable session"
+  tmux source-file "$HOME/.tmux.conf" || log "tmux config will finish loading from the next interactive tmux client."
+
+  # Install the per-tab session manager script.
+  install_template "$skill_dir/scripts/tmux-auto-attach" "$HOME/.local/bin/tmux-auto-attach"
+  chmod +x "$HOME/.local/bin/tmux-auto-attach"
+
+  log "Configured tmux per-tab auto-attach"
 }
 
 configure_tmux_service() {
@@ -161,8 +164,10 @@ verify_setup() {
     log "Konsole profiles:"
     konsole --list-profiles || true
   fi
+  log "tmux-auto-attach=$([ -x "$HOME/.local/bin/tmux-auto-attach" ] && printf installed || printf missing)"
+  log "tmux server running=$(tmux info >/dev/null 2>&1 && printf yes || printf no)"
   log "tmux sessions:"
-  tmux list-sessions || true
+  tmux list-sessions 2>/dev/null || log "(none yet — sessions are created per Konsole tab)"
   log "tmux continuum interval=$(tmux show-options -gqv @continuum-save-interval 2>/dev/null || true)"
   log "tmux capture pane contents=$(tmux show-options -gqv @resurrect-capture-pane-contents 2>/dev/null || true)"
   log "tmux capture pane area=$(tmux show-options -gqv @resurrect-pane-contents-area 2>/dev/null || true)"
