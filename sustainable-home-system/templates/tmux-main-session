@@ -8,4 +8,7 @@ set -euo pipefail
 # that Konsole tabs would attach to.
 if ! /usr/bin/tmux info >/dev/null 2>&1; then
   /usr/bin/tmux start-server
+  if [ -f "$HOME/.tmux/plugins/tmux-resurrect/scripts/restore.sh" ]; then
+    bash "$HOME/.tmux/plugins/tmux-resurrect/scripts/restore.sh"
+  fi
 fi

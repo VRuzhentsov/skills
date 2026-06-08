@@ -12,8 +12,8 @@ Make a Linux desktop safe to reboot by layering restore mechanisms. This is inte
 - Konsole opens into tmux instead of disposable Bash tabs.
 - Each Konsole tab auto-creates or reattaches to its own tmux session named by working directory. This keeps tabs independent — each tab has its own history and process.
 - tmux persists terminal layout, working directories, processes, and captured scrollback per session.
-- tmux-resurrect restores sessions after reboot; tmux-continuum autosaves every 5 minutes.
-- A user systemd service starts the tmux server at login so sessions are ready before any Konsole tab opens.
+- tmux-resurrect restores sessions after reboot; tmux-continuum autosaves every 5 minutes. Restore fires once at login via the systemd service — not on arbitrary server starts — so intentionally closing a session mid-day gives a clean new tab.
+- A user systemd service starts the tmux server at login and triggers the resurrect restore, so sessions are ready before any Konsole tab opens.
 - Terminal recovery must preserve the user's visual profile. Do not replace a dark/translucent terminal with a light default profile.
 
 This skill targets Fedora Atomic desktops first: Bazzite and Kinoite on KDE Plasma. Treat other Linux desktops as adaptations of the same model. Keep instructions public-safe: avoid private usernames, machine-specific paths, account details, and personal workflow assumptions unless the current user explicitly asks for them.
@@ -25,7 +25,7 @@ Be explicit about limits:
 - A reboot or power loss kills running processes.
 - KDE can reopen many windows and Konsole tabs with saved working directories, but process state depends on tmux.
 - Browsers can restore tabs, but unsaved form/app state may still depend on each website.
-- tmux-resurrect can restore layout, working directories, scrollback, and specific safe processes (e.g. opencode, vim). It cannot restore arbitrary live process memory.
+- tmux-resurrect can restore layout, working directories, scrollback, and specific safe processes (e.g. opencode, vim). It cannot restore arbitrary live process memory. For opencode, use `"opencode->opencode --continue"` in `@resurrect-processes` so the restored process resumes the previous conversation instead of starting a new session.
 - Per-tab tmux session naming is based on working directory basename. If multiple tabs share the same directory, they get indexed names (e.g. `foo`, `foo-2`). After reboot these tabs may reconnect in shuffled order, but all processes and history still restore.
 
 The success target is "resume quickly without losing the map of work," not impossible process immortality.
@@ -98,7 +98,7 @@ If not using the script, apply the same layers manually:
 3. Install tmux plugins: `tpm`, `tmux-resurrect`, `tmux-continuum`.
 4. Install `scripts/tmux-auto-attach` to `~/.local/bin/tmux-auto-attach` and make it executable.
 5. Configure Konsole default profile to run `~/.local/bin/tmux-auto-attach` while preserving the user's existing color scheme/transparency.
-6. Add a user systemd oneshot service that starts the tmux server at login.
+6. Add a user systemd oneshot service that starts the tmux server at login and explicitly calls `~/.tmux/plugins/tmux-resurrect/scripts/restore.sh`. Set `@continuum-restore 'off'` so restore only fires at login, not on arbitrary server starts.
 7. Save a tmux-resurrect snapshot and verify restore files exist.
 
 ## Verification
@@ -112,6 +112,8 @@ systemctl --user is-enabled tmux-main.service
 systemctl --user is-failed tmux-main.service
 tmux list-sessions
 tmux show-options -gqv @continuum-save-interval
+tmux show-options -gqv @continuum-restore
+tmux show-options -gqv @resurrect-processes
 tmux show-options -gqv @resurrect-capture-pane-contents
 tmux show-options -gqv @resurrect-pane-contents-area
 ```
@@ -128,6 +130,8 @@ Expected:
 - `tmux-main.service` is enabled and not failed.
 - tmux server is running (`tmux list-sessions` returns sessions or "no server" only on first boot).
 - tmux autosave interval is `5`.
+- `@continuum-restore` is `off` (restore is triggered explicitly at login by the systemd service, not on every server start).
+- `@resurrect-processes` includes `"opencode->opencode --continue"` so opencode resumes its previous conversation after reboot.
 - pane content capture is `on` and area is `full`.
 
 ## Response Style
