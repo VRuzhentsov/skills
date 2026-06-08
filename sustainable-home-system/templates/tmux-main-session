@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if /usr/bin/tmux has-session -t main 2>/dev/null; then
+  exit 0
+fi
+
+exec /usr/bin/tmux new-session -d -s main

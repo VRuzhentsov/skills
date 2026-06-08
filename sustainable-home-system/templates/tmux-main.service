@@ -1,0 +1,9 @@
+[Unit]
+Description=Start durable tmux main session
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/tmux-main-session
+
+[Install]
+WantedBy=default.target

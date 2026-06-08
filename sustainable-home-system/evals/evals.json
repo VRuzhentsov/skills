@@ -1,0 +1,23 @@
+{
+  "skill_name": "sustainable-home-system",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I use Fedora Bazzite/KDE and I want to stop being afraid of rebooting. Configure my desktop so Konsole/tmux, my browser tabs, and reopened apps recover as much as possible. First check what browser/app setup I actually use.",
+      "expected_output": "Uses the Fedora KDE bundled script or equivalent layered setup for KDE session restore, desired browser startup restore, Konsole tmux profile, tmux persistence, and user systemd service, while inspecting installed/desired apps and explaining realistic limits.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Rename my old sustainable-terminal skill into a broader sustainable home system skill with scripts/templates instead of a giant prose-only SKILL.md.",
+      "expected_output": "Creates a sustainable-home-system skill, moves concrete configs into templates/scripts, updates metadata, and removes/replaces the terminal-only skill name.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Explain what I can and cannot expect to restore after a hard reboot on Kinoite: browser tabs, terminal tabs, Discord, dev servers, editors, and random GUI windows.",
+      "expected_output": "Explains layered restore guarantees and limitations: KDE reopens windows where supported, configured browsers restore tabs, tmux restores terminal workspace snapshots, running processes die, app-specific state varies.",
+      "files": []
+    }
+  ]
+}

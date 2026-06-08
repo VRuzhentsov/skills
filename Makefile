@@ -1,6 +1,6 @@
 .PHONY: help list install
 
-SKILLS := create-ticket start-ticket sustainable-terminal ticket-markdown
+SKILLS := create-ticket start-ticket sustainable-home-system ticket-markdown
 AGENTS ?= opencode codex claude-code
 SOURCE := .
 
@@ -11,7 +11,7 @@ help:
 	@printf "  make install SKILL=<skill-name>\n\n"
 	@printf "Examples:\n"
 	@printf "  npx skills add %s -g --skill create-ticket --agent %s -y\n" "$(SOURCE)" "$(AGENTS)"
-	@printf "  npx skills add %s -g --skill sustainable-terminal --agent %s -y\n" "$(SOURCE)" "$(AGENTS)"
+	@printf "  npx skills add %s -g --skill sustainable-home-system --agent %s -y\n" "$(SOURCE)" "$(AGENTS)"
 	@printf "  npx skills add %s -g --skill ticket-markdown --agent %s -y\n\n" "$(SOURCE)" "$(AGENTS)"
 	@printf "Available skills:\n"
 	@printf "  %s\n" $(SKILLS)

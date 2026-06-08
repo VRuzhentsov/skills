@@ -1,14 +1,14 @@
-# Portable Ticket Skills
+# Portable Skills
 
-Open-source skills for creating, planning, and documenting tickets across Jira and GitHub.
+Open-source skills for ticket workflows and resilient desktop/workstation setup.
 
-This repository intentionally avoids company-specific defaults (project keys, domains, internal workflows, and private naming).
+This repository intentionally avoids company-specific defaults, private machine assumptions, project keys, domains, internal workflows, and private naming.
 
 ## Included Skills
 
 - `create-ticket` - Create tickets in Jira or GitHub Issues with provider auto-detection and safe fallback payloads.
 - `start-ticket` - Turn an existing ticket into a concrete implementation plan with clarifying questions and repo exploration.
-- `sustainable-terminal` - Set up a resilient Linux terminal workspace with tmux persistence and desktop terminal restore.
+- `sustainable-home-system` - Set up resilient Fedora KDE workstation restore for desktop sessions, Chrome tabs, and tmux terminals.
 - `ticket-markdown` - Keep local ticket notes consistent with an Obsidian-first markdown format and generic metadata.
 
 ## Install
@@ -18,7 +18,7 @@ Install directly from this repository:
 ```bash
 npx skills@latest add VRuzhentsov/skills/create-ticket
 npx skills@latest add VRuzhentsov/skills/start-ticket
-npx skills@latest add VRuzhentsov/skills/sustainable-terminal
+npx skills@latest add VRuzhentsov/skills/sustainable-home-system
 npx skills@latest add VRuzhentsov/skills/ticket-markdown
 ```
 
@@ -28,7 +28,7 @@ Example prompts after install:
 
 - "Create a GitHub issue for this bug and save a local ticket note."
 - "Start ticket https://github.com/owner/repo/issues/123 and draft an implementation plan."
-- "Set up sustainable terminal recovery on KDE Konsole so my tmux workspace survives crashes and reboots."
+- "Set up a sustainable home system on Fedora Bazzite so KDE windows, Chrome tabs, and terminal sessions recover after reboot."
 - "Sync this Jira ticket into markdown with references and frontmatter."
 
 ## Publish Workflow

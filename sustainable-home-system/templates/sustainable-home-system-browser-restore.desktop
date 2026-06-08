@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Sustainable Home System Browser Restore
+Exec=__SKILL_DIR__/scripts/browser-restore-enforcer.sh
+X-KDE-autostart-phase=1
+NoDisplay=true
