@@ -20,15 +20,49 @@ Detection hints:
 
 - Jira: ticket keys like `PROJ-123`, Atlassian URLs, explicit "Jira" mention.
 - GitHub: `owner/repo`, GitHub issue URLs, `#123` with repo context, explicit "GitHub" mention.
+- Mixed provider: when the target is GitHub but Jira content must be fetched or read as source context, apply the Jira MCP preflight before reading Jira.
+
+## Jira MCP preflight gate
+
+Before any Jira work begins, verify Atlassian MCP access. For Jira-signaled prompts, only detect that Jira is involved, then stop content processing until this gate passes.
+
+Run this gate when:
+
+- The target provider is Jira.
+- The request includes a Jira ticket key, Atlassian URL, or explicit Jira mention.
+- Jira must be fetched or read as source context for another provider.
+
+Do not run this gate for clearly GitHub-only requests. For ambiguous requests with no Jira/GitHub signal, ask the provider question first.
+
+Gate sequence:
+
+1. Verify Atlassian MCP tool declarations are available, including `atlassian_getAccessibleAtlassianResources`.
+2. Call `atlassian_getAccessibleAtlassianResources`.
+3. Continue only when the tool declarations exist and the resources call returns at least one accessible Atlassian resource.
+
+If the declaration check fails, the resources call fails, authentication is missing, or no accessible resources are returned:
+
+1. Ask one targeted question with the `question` tool telling the user to enable/authenticate Atlassian MCP.
+2. Do not retry in the same run.
+3. Exit immediately with this structure:
+
+```text
+ERROR: Atlassian MCP is unavailable or not authenticated. Jira ticket creation cannot continue.
+Observed condition: <missing tool declaration | tool error | no accessible resources>
+Remediation: enable/authenticate Atlassian MCP, then rerun the request.
+```
+
+On this failure path, do not parse ticket content, gather fields, draft content, build fallback payloads, create remote issues, preserve artifacts, or sync local markdown.
 
 ## Workflow
 
-1. Identify provider and scope.
-2. Gather minimum required fields.
-3. Draft structured content from issue-type template.
-4. Show draft and ask for explicit confirmation.
-5. Create ticket via provider adapter.
-6. Create/update local markdown note via `ticket-markdown`.
+1. Identify provider and scope. If provider is ambiguous, ask the provider question before any Jira MCP preflight.
+2. For Jira targets or Jira source reads, complete the Jira MCP preflight gate before any ticket content processing.
+3. Gather minimum required fields.
+4. Draft structured content from issue-type template.
+5. Show draft and ask for explicit confirmation.
+6. Create ticket via provider adapter.
+7. Create/update local markdown note via `ticket-markdown`.
 
 ## Required inputs
 
@@ -71,12 +105,11 @@ Keep heading order. If unknown, keep section and set value to `TBD`.
 
 ### Jira adapter
 
-Use Atlassian MCP in this sequence:
+Use Atlassian MCP in this sequence after the Jira MCP preflight gate has passed:
 
-1. `atlassian_getAccessibleAtlassianResources`
-2. `atlassian_getJiraProjectIssueTypesMetadata`
-3. `atlassian_getJiraIssueTypeMetaWithFields` (when required fields/values are unclear)
-4. `atlassian_createJiraIssue`
+1. `atlassian_getJiraProjectIssueTypesMetadata`
+2. `atlassian_getJiraIssueTypeMetaWithFields` (when required fields/values are unclear)
+3. `atlassian_createJiraIssue`
 
 If creation fails:
 
@@ -105,7 +138,9 @@ If creation fails:
 
 ## Fallback mode
 
-When provider tools are unavailable or auth is missing, do not stop at "cannot create".
+When GitHub provider tools are unavailable or GitHub auth is missing, do not stop at "cannot create".
+
+For Jira, fallback mode is allowed only after the Jira MCP preflight gate has passed and a later Jira metadata/create call fails. Missing Atlassian MCP declaration, missing authentication, failed accessible resources call, or no accessible resources is a hard early exit with no fallback artifacts.
 
 Return:
 
@@ -135,7 +170,8 @@ Pass these fields:
 
 ## Trigger examples
 
-- "Create a bug ticket for this crash"
-- "Open a GitHub issue from these notes"
-- "Create a Jira story for this feature"
+- "Create a bug ticket for this crash" -> ask provider first when no provider signal exists.
+- "Open a GitHub issue from these notes" -> use GitHub path without Atlassian MCP preflight.
+- "Create a Jira story for this feature" -> verify Atlassian MCP declaration and accessible resources before parsing feature content.
+- "Create a GitHub issue from Jira PROJ-123" -> verify Atlassian MCP before reading Jira source context.
 - "Draft a change request ticket"
