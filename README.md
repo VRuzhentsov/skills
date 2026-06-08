@@ -13,7 +13,13 @@ This repository intentionally avoids company-specific defaults, private machine 
 
 ## Install
 
-Install directly from this repository:
+Install any skill directly from this repository by replacing `<skill-name>` with the target skill directory name:
+
+```bash
+npx skills@latest add VRuzhentsov/skills/<skill-name>
+```
+
+Known skills:
 
 ```bash
 npx skills@latest add VRuzhentsov/skills/create-ticket
