@@ -1,0 +1,23 @@
+{
+  "skill_name": "sustainable-terminal",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I use KDE Konsole with bash on Fedora and I keep losing all my terminal tabs after reboot. Set up a robust restore system so my shell context and output are recoverable.",
+      "expected_output": "Produces a KDE/Konsole/tmux setup plan or implementation with tmux-resurrect, tmux-continuum, Konsole default profile, KDE session restore, and verification steps.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Explain the difference between terminal, console, shell, bash, Konsole, and tmux, then tell me which layer should handle crash recovery.",
+      "expected_output": "Explains the layer model clearly and identifies tmux as the durable session layer while noting reboot cannot preserve arbitrary live processes.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I want the same sustainable terminal setup on a new laptop, but I use WezTerm instead of Konsole. Give me the portable core and what changes for WezTerm.",
+      "expected_output": "Keeps the tmux core unchanged, adapts only the terminal startup/profile layer for WezTerm, and includes safe verification commands.",
+      "files": []
+    }
+  ]
+}

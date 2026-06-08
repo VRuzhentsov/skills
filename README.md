@@ -8,6 +8,7 @@ This repository intentionally avoids company-specific defaults (project keys, do
 
 - `create-ticket` - Create tickets in Jira or GitHub Issues with provider auto-detection and safe fallback payloads.
 - `start-ticket` - Turn an existing ticket into a concrete implementation plan with clarifying questions and repo exploration.
+- `sustainable-terminal` - Set up a resilient Linux terminal workspace with tmux persistence and desktop terminal restore.
 - `ticket-markdown` - Keep local ticket notes consistent with an Obsidian-first markdown format and generic metadata.
 
 ## Install
@@ -17,6 +18,7 @@ Install directly from this repository:
 ```bash
 npx skills@latest add VRuzhentsov/skills/create-ticket
 npx skills@latest add VRuzhentsov/skills/start-ticket
+npx skills@latest add VRuzhentsov/skills/sustainable-terminal
 npx skills@latest add VRuzhentsov/skills/ticket-markdown
 ```
 
@@ -26,6 +28,7 @@ Example prompts after install:
 
 - "Create a GitHub issue for this bug and save a local ticket note."
 - "Start ticket https://github.com/owner/repo/issues/123 and draft an implementation plan."
+- "Set up sustainable terminal recovery on KDE Konsole so my tmux workspace survives crashes and reboots."
 - "Sync this Jira ticket into markdown with references and frontmatter."
 
 ## Publish Workflow
