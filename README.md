@@ -7,25 +7,27 @@ This repository intentionally avoids company-specific defaults, private machine 
 ## Included Skills
 
 - `create-ticket` - Create tickets in Jira or GitHub Issues with provider auto-detection and safe fallback payloads.
+- `skill-orchestrator` - Maintain custom skill routing, repository taxonomy, install docs, and publishing boundaries.
 - `start-ticket` - Turn an existing ticket into a concrete implementation plan with clarifying questions and repo exploration.
 - `sustainable-home-system` - Set up resilient Fedora KDE workstation restore for desktop sessions, Chrome tabs, and tmux terminals.
 - `ticket-markdown` - Keep local ticket notes consistent with an Obsidian-first markdown format and generic metadata.
 
 ## Install
 
-Install any skill directly from this repository by replacing `<skill-name>` with the target skill directory name:
+Install any skill directly from this repository by replacing `<owner>`, `<repo>`, and `<skill-name>` with the target repository and skill directory name:
 
 ```bash
-npx skills@latest add VRuzhentsov/skills/<skill-name>
+npx skills@latest add <owner>/<repo>/<skill-name>
 ```
 
 Known skills:
 
 ```bash
-npx skills@latest add VRuzhentsov/skills/create-ticket
-npx skills@latest add VRuzhentsov/skills/start-ticket
-npx skills@latest add VRuzhentsov/skills/sustainable-home-system
-npx skills@latest add VRuzhentsov/skills/ticket-markdown
+npx skills@latest add <owner>/<repo>/create-ticket
+npx skills@latest add <owner>/<repo>/skill-orchestrator
+npx skills@latest add <owner>/<repo>/start-ticket
+npx skills@latest add <owner>/<repo>/sustainable-home-system
+npx skills@latest add <owner>/<repo>/ticket-markdown
 ```
 
 ## Quick Start
@@ -33,6 +35,7 @@ npx skills@latest add VRuzhentsov/skills/ticket-markdown
 Example prompts after install:
 
 - "Create a GitHub issue for this bug and save a local ticket note."
+- "Update my skill routing and decide which skill repo this belongs in."
 - "Start ticket https://github.com/owner/repo/issues/123 and draft an implementation plan."
 - "Set up a sustainable home system on Fedora Bazzite so KDE windows, Chrome tabs, and terminal sessions recover after reboot."
 - "Sync this Jira ticket into markdown with references and frontmatter."

@@ -5,7 +5,7 @@ Use this checklist before publishing or tagging a release.
 ## 1) Content Safety
 
 - [ ] Run a private-data scan across repo text for company identifiers, domains, project keys, and internal links.
-- [ ] Confirm no private skills are present in this repo (public repo should contain only `create-ticket`, `start-ticket`, `ticket-markdown`).
+- [ ] Confirm no private skills are present in this repo.
 - [ ] Confirm examples use neutral placeholders (`TICKET-123`, `owner/repo`, `https://example.com/...`).
 
 Suggested scan command:
@@ -17,6 +17,7 @@ grep -RniE "atlassian.net|eleven|BND-|CM\b|internal runbook|private" .
 ## 2) Skill Validation
 
 - [ ] Validate `create-ticket` SKILL frontmatter and structure.
+- [ ] Validate `skill-orchestrator` SKILL frontmatter and structure.
 - [ ] Validate `start-ticket` SKILL frontmatter and structure.
 - [ ] Validate `ticket-markdown` SKILL frontmatter and structure.
 
@@ -24,6 +25,7 @@ Commands:
 
 ```bash
 python -m scripts.quick_validate ./create-ticket
+python -m scripts.quick_validate ./skill-orchestrator
 python -m scripts.quick_validate ./start-ticket
 python -m scripts.quick_validate ./ticket-markdown
 ```
@@ -33,6 +35,7 @@ Run these from the skill-creator script directory.
 ## 3) Package Public Skills
 
 - [ ] Package `create-ticket`.
+- [ ] Package `skill-orchestrator`.
 - [ ] Package `start-ticket`.
 - [ ] Package `ticket-markdown`.
 - [ ] Verify artifacts exist under `dist/`.
@@ -41,6 +44,7 @@ Commands:
 
 ```bash
 python -m scripts.package_skill ./create-ticket ./dist
+python -m scripts.package_skill ./skill-orchestrator ./dist
 python -m scripts.package_skill ./start-ticket ./dist
 python -m scripts.package_skill ./ticket-markdown ./dist
 ```
@@ -57,14 +61,16 @@ Run these from the skill-creator script directory.
 Install commands:
 
 ```bash
-npx skills@latest add VRuzhentsov/skills/create-ticket
-npx skills@latest add VRuzhentsov/skills/start-ticket
-npx skills@latest add VRuzhentsov/skills/ticket-markdown
+npx skills@latest add <owner>/<repo>/create-ticket
+npx skills@latest add <owner>/<repo>/skill-orchestrator
+npx skills@latest add <owner>/<repo>/start-ticket
+npx skills@latest add <owner>/<repo>/ticket-markdown
 ```
 
 Suggested smoke prompts:
 
 - `create-ticket`: "Create a GitHub issue for login timeout with labels bug and backend."
+- `skill-orchestrator`: "Update my skill routing and decide which skill repo this belongs in."
 - `start-ticket`: "Start ticket owner/repo#42 and produce implementation plan with TDD-first tests."
 - `ticket-markdown`: "Create local markdown note for TICKET-123 with related links and frontmatter."
 
