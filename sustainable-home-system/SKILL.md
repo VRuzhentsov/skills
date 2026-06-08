@@ -12,6 +12,7 @@ Make a Linux desktop safe to reboot by layering restore mechanisms. This is inte
 - Konsole opens into tmux instead of disposable Bash tabs.
 - tmux persists terminal windows, panes, directories, and captured output snapshots.
 - A user systemd service starts the durable tmux session at login.
+- Terminal recovery must preserve the user's visual profile. Do not replace a dark/translucent terminal with a light default profile.
 
 This skill targets Fedora Atomic desktops first: Bazzite and Kinoite on KDE Plasma. Treat other Linux desktops as adaptations of the same model. Keep instructions public-safe: avoid private usernames, machine-specific paths, account details, and personal workflow assumptions unless the current user explicitly asks for them.
 
@@ -37,6 +38,15 @@ tmux -V
 konsole --list-profiles
 kreadconfig6 --file ksmserverrc --group General --key loginMode
 ```
+
+For Konsole appearance, inspect the current/default profile before creating the tmux profile:
+
+```bash
+konsole --list-profiles
+grep -R "ColorScheme" ~/.local/share/konsole /usr/share/konsole 2>/dev/null
+```
+
+If the user already uses a dark or translucent profile, copy its `ColorScheme` into the restorable tmux profile. On Bazzite/KDE, `Vapor` is a common dark translucent profile. The bundled `RestorableTmux.profile` uses `ColorScheme=Vapor` as the default public-safe choice, but prefer the user's existing profile when clear.
 
 For browsers, first identify what is installed and what the user wants restored. Then check only relevant profile locations. Common Chromium-family preference files include:
 
@@ -82,7 +92,7 @@ If not using the script, apply the same layers manually:
 1. Configure KDE session restore: `ksmserverrc` `loginMode=restorePreviousLogout`.
 2. Configure only desired browser profiles. For Chromium-family browsers, set `session.restore_on_startup=1`, plus a user autostart enforcer because browsers can overwrite Preferences while running. For Firefox and other browsers, use their own documented restore settings instead of Chromium JSON.
 3. Install tmux plugins: `tpm`, `tmux-resurrect`, `tmux-continuum`.
-4. Configure Konsole default profile to run `tmux new-session -A -s main`.
+4. Configure Konsole default profile to run `tmux new-session -A -s main` while preserving the user's existing color scheme/transparency.
 5. Add a user systemd oneshot service that starts `tmux main` at login.
 6. Save a tmux-resurrect snapshot and verify restore files exist.
 
@@ -107,6 +117,7 @@ Expected:
 - Desired browser startup restore is enabled using that browser's supported mechanism.
 - Browser restore enforcer exists in the installed skill `scripts/` directory and KDE autostart points at it when Chromium-family browser restore is configured.
 - Konsole lists `RestorableTmux`.
+- `RestorableTmux.profile` has a non-empty dark/translucent `ColorScheme`, usually copied from the user's previous profile or `Vapor` on Bazzite/KDE.
 - `tmux-main.service` is enabled and not failed.
 - tmux session `main` exists.
 - tmux autosave interval is `5`.
