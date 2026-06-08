@@ -8,4 +8,4 @@ HistoryMode=2
 HistorySize=200000
 
 [Appearance]
-ColorScheme=
+ColorScheme=Vapor
