@@ -49,7 +49,7 @@ Do not maintain a duplicated inventory of individual skills in this skill. Disco
 
 ## Installed Skill Copies
 
-Treat installed global skill copies under `~/.agents/skills/**` as runtime artifacts. Do not edit them directly except for emergency diagnosis. Make durable skill changes in the source repository selected from the taxonomy, then reinstall or update the installed copy from that source.
+Treat installed global skill copies under paths such as `~/.agents/skills/**` and `~/.claude/skills/**` as generated runtime artifacts. Make durable skill changes in the source repository selected from the taxonomy, then reinstall or update the installed copy from that source. If an installed copy was edited accidentally, port the intended change back to the source repository, commit it there when requested, and reinstall.
 
 When changing an existing installed skill:
 
