@@ -1,6 +1,6 @@
 ---
 name: skill-orchestrator
-description: Orchestrate the user's custom skill ecosystem. Use when maintaining skill routing, SKILLS.md, custom skill repositories, repository taxonomy, install docs, or publishing boundaries. Do not use for generic third-party skill discovery or one-off use of an existing skill.
+description: Orchestrate the user's custom skill ecosystem. Use when creating, improving, classifying, installing, documenting, publishing, or maintaining user-owned skills and skill repositories.
 ---
 
 # Skill Orchestrator
