@@ -1,6 +1,6 @@
 .PHONY: help list install
 
-SKILLS := create-ticket start-ticket sustainable-home-system ticket-markdown
+SKILLS := create-ticket skill-ops start-ticket sustainable-home-system ticket-markdown
 AGENTS ?= opencode codex claude-code
 SOURCE := .
 

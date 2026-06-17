@@ -8,6 +8,7 @@ This repository intentionally avoids company-specific defaults, private machine 
 
 - `create-ticket` - Create tickets in Jira or GitHub Issues with provider auto-detection and safe fallback payloads.
 - `skill-orchestrator` - Maintain custom skill routing, repository taxonomy, install docs, and publishing boundaries.
+- `skill-ops` - Iteratively optimize a prompt/SOP document against a gradeable task set with a keep/revert loop, tracking editable targets in a machine-local registry.
 - `start-ticket` - Turn an existing ticket into a concrete implementation plan with clarifying questions and repo exploration.
 - `sustainable-home-system` - Set up resilient Fedora KDE workstation restore for desktop sessions, Chrome tabs, and tmux terminals.
 - `ticket-markdown` - Keep local ticket notes consistent with an Obsidian-first markdown format and generic metadata.
@@ -25,6 +26,7 @@ Known skills:
 ```bash
 npx skills@latest add <owner>/<repo>/create-ticket
 npx skills@latest add <owner>/<repo>/skill-orchestrator
+npx skills@latest add <owner>/<repo>/skill-ops
 npx skills@latest add <owner>/<repo>/start-ticket
 npx skills@latest add <owner>/<repo>/sustainable-home-system
 npx skills@latest add <owner>/<repo>/ticket-markdown
