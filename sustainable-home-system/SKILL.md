@@ -123,6 +123,8 @@ This is generic enough to extend to other TUIs that publish a stable terminal ti
 
 ## Verification
 
+This checklist doubles as a `skill-ops` grader contract: each check below is objectively true or false, so `skill-ops` can run it as a binary checklist to empirically tune this skill or its installer.
+
 After setup, verify:
 
 ```bash

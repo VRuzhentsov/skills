@@ -34,6 +34,11 @@ For creative or strategic targets with no ground truth, do not run the loop. Pro
 advisory edit, label it as unverified, and state the limitation: the optimization loop needs a
 gradeable signal to decide whether an edit helped.
 
+A skill that already ships an objective Verification checklist is itself a ready-made target: its
+checklist is the grader. `sustainable-home-system` is the canonical example — its Verification
+block (`kreadconfig6`/`systemctl`/`tmux show-options` checks with explicit expected values) is a
+binary checklist that can be run as the pass/fail signal for this loop.
+
 ## State and registry
 
 Keep all skill-ops state in one machine-local folder: `~/.config/skill-ops/`.
