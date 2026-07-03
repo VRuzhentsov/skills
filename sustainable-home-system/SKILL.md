@@ -90,6 +90,89 @@ Bundled resources:
 - `templates/tmux-main.service` - user systemd service.
 - `templates/sustainable-home-system-browser-restore.desktop` - KDE autostart entry for the browser restore enforcer.
 
+## Workstation Bootstrap Scope
+
+This skill is broader than desktop session restore: it should also capture the repeatable workstation bootstrap story for a fresh machine. The target is that a new Fedora Kinoite/KDE workstation can be rebuilt from the user's home repository, documented runtime choices, and explicit verification checks without rediscovering local setup decisions.
+
+Use "sustainable workstation" as the conceptual scope when the user asks about fresh-machine setup, durable runtime install choices, or whether the home/workstation guide is enough to reproduce the system. Keep the installed skill name `sustainable-home-system` until references are deliberately migrated; do not rename it opportunistically.
+
+### Hermes Agent Runtime Baseline
+
+The preferred Hermes runtime for this workstation is a user-space package-style `uv tool` install, not the official shell installer's writable git checkout. This avoids treating `~/.hermes/hermes-agent` as both an installed product and a mutable source tree.
+
+Current baseline pattern:
+
+```bash
+uv tool install --force \
+  --with sounddevice \
+  --with numpy \
+  --with faster-whisper \
+  hermes-agent
+```
+
+Expected layout:
+
+- Launcher: `~/.local/bin/hermes`.
+- Runtime: `~/.local/share/uv/tools/hermes-agent/`.
+- Code path reported by `hermes --version`: `~/.local/share/uv/tools/hermes-agent/lib/python*/site-packages`.
+- Config/state remains under `~/.hermes/`: `config.yaml`, `.env`, `auth.json`, `state.db`, `sessions/`, `skills/`, `cron/`, `logs/`, and optional profile directories.
+- Update command: `uv tool upgrade hermes-agent`.
+- Do not use `~/.hermes/hermes-agent` as the active runtime on this workstation unless the user explicitly chooses a development/source install.
+
+Voice/STT baseline:
+
+- `sounddevice` + `numpy` provide local audio capture support.
+- `faster-whisper` provides local STT without a cloud key.
+- Expected config: `stt.enabled: true`, `stt.provider: local`, and `stt.local.model: medium` unless the user chooses another model.
+
+Approval timeout baseline for package installs:
+
+- Because package releases may not treat `approvals.timeout: 0` as unlimited, use a very large timeout as a config-only workaround instead of patching Hermes source:
+  - `approvals.timeout: 315360000`
+  - `approvals.gateway_timeout: 315360000`
+
+Fresh-machine bootstrap expectation:
+
+1. Restore or clone the home/workstation configuration repository so `~/.hermes/config.yaml`, cross-agent instructions, and documented environment registry are available.
+2. Install the generic runtime tools needed by the guide, especially `uv`, Git, Node.js, ripgrep, and desktop/audio prerequisites appropriate for Fedora Kinoite.
+3. Install Hermes with the `uv tool install --force --with ... hermes-agent` command above.
+4. Do not copy secrets into documentation. Restore secret-bearing files (`~/.hermes/.env`, provider auth files, OAuth caches) through the user's chosen secret/backup mechanism, or re-authenticate with `hermes auth` / `hermes model` / provider-specific setup.
+5. Run verification before declaring the workstation reproducible.
+
+Hermes verification checklist:
+
+```bash
+command -v hermes
+readlink -f "$(command -v hermes)"
+hermes --version
+hermes config path
+uv tool list
+~/.local/share/uv/tools/hermes-agent/bin/python - <<'PY'
+import importlib.util
+from hermes_cli.config import load_config, detect_install_method, recommended_update_command
+print('detect_install_method =', detect_install_method())
+print('recommended_update_command =', recommended_update_command())
+for name in ['sounddevice', 'numpy', 'faster_whisper']:
+    print(f'{name} =', 'installed' if importlib.util.find_spec(name) else 'missing')
+cfg = load_config()
+print('stt.enabled =', cfg.get('stt', {}).get('enabled'))
+print('stt.provider =', cfg.get('stt', {}).get('provider'))
+print('stt.local.model =', cfg.get('stt', {}).get('local', {}).get('model'))
+print('approvals.timeout =', cfg.get('approvals', {}).get('timeout'))
+print('approvals.gateway_timeout =', cfg.get('approvals', {}).get('gateway_timeout'))
+PY
+hermes doctor
+```
+
+Expected verification:
+
+- `readlink -f $(command -v hermes)` points into `~/.local/share/uv/tools/hermes-agent/bin/hermes`.
+- `hermes --version` reports the project under uv tool `site-packages`, not `~/.hermes/hermes-agent`.
+- `recommended_update_command` is `uv tool upgrade hermes-agent`.
+- `sounddevice`, `numpy`, and `faster_whisper` are installed in Hermes' uv-tool Python.
+- STT config is local + medium when voice mode is expected.
+- `hermes doctor` may still warn about optional messaging/API integrations that are intentionally unconfigured; do not run `hermes doctor --fix` blindly if it proposes editable/source installs.
+
 ## Manual Workflow
 
 If not using the script, apply the same layers manually:
