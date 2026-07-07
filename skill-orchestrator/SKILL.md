@@ -100,6 +100,20 @@ Before concluding a source repo is missing, check the direct taxonomy paths. Bro
 
 Installed paths are generated views unless they are symlinks resolving into one of the canonical source repositories.
 
+## Project-Local Skills Are First-Class
+
+When work is happening inside a project repository, inspect that repository for local skill files before creating, updating, or relying on a global skill for project-specific behavior.
+
+Minimum project-local discovery:
+
+1. Identify the repository root for the current work.
+2. Search that repository for `SKILL.md` files.
+3. Read the relevant local skill(s) or project operating docs before deciding where durable knowledge belongs.
+4. Prefer project docs or existing project-local skills for project-specific workflows.
+5. Promote only generalized lessons into a custom source skill, and only after checking for an existing umbrella skill.
+
+Do not create a new global or installed skill named after a project just because a project workflow was complex. If the project repository already contains the necessary docs or a local skill, update that source instead. If no repo-local skill exists but the lesson is project-specific, prefer adding or updating repository documentation over creating a machine-global skill.
+
 ## Self-Improvement Routing
 
 Self-improvement is allowed and expected to improve existing user-owned skills when they are relevant. It is not limited to bundled or installed skill folders.
@@ -211,10 +225,11 @@ Use this as a design target; implement only after the user approves the concrete
 Start by inspecting the smallest relevant set of files:
 
 1. Read the user's local `SKILLS.md` for current skill routing and repository classification.
-2. Read the target repository `README.md` if repository documentation matters.
-3. Search the target repository for `**/SKILL.md`.
-4. Read one or two existing `SKILL.md` files to match style.
-5. Check `git status --short`, `git remote -v`, and recent commits before committing or publishing.
+2. If the current task is inside a project repository, search that repository for `SKILL.md` and read the relevant local skill(s) before relying on installed/global skills or creating any project-specific skill.
+3. Read the target repository `README.md` and local operating docs if repository documentation matters.
+4. Search canonical custom skill source repositories directly when deciding whether an existing umbrella skill already covers a reusable lesson.
+5. Read one or two existing `SKILL.md` files to match style.
+6. Check `git status --short`, `git remote -v`, and recent commits before committing or publishing.
 
 Avoid broad sweeps across unrelated project repositories unless the user explicitly asks for inventory.
 
