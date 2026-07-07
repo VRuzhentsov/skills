@@ -69,6 +69,10 @@ Classify before creating or moving a skill:
 
 Do not let personal-private skills drift into organization-private skills.
 
+## Language Policy
+
+All persisted skill ecosystem artifacts must be written in English only: skill names, descriptions, trigger phrases, workflow instructions, README install docs, audits, reports, tickets, PR text, commit messages, and generated metadata. If the user discusses a skill in another language, translate the intent into English before saving it. Do not store non-English trigger phrases or examples unless the user explicitly requests a specific localization artifact.
+
 ## Discovery Workflow
 
 Start by inspecting the smallest relevant set of files:
