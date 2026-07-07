@@ -51,6 +51,17 @@ Do not maintain a duplicated inventory of individual skills in this skill. Disco
 
 Treat installed global skill copies under paths such as `~/.agents/skills/**` and `~/.claude/skills/**` as generated runtime artifacts. Make durable skill changes in the source repository selected from the taxonomy, then reinstall or update the installed copy from that source. If an installed copy was edited accidentally, port the intended change back to the source repository, commit it there when requested, and reinstall.
 
+Self-improvement is allowed and expected to edit the user's canonical custom skill sources, not only Hermes-owned installed skill folders. Before creating a new skill, search existing custom skills by name, description, and likely domain. If an existing skill is even a reasonable umbrella, patch that source skill or add a `references/` file under it instead of creating a competing sibling skill.
+
+Treat these source repositories as the allowed self-improvement target set, subject to the taxonomy and privacy boundaries:
+
+- `~/projects/skills`
+- `~/projects/private-skills`
+- `~/projects/work-skills`
+- `~/projects/work-private-skills`
+
+Installed paths such as `~/.hermes/skills/**`, `~/.agents/skills/**`, `~/.claude/skills/**`, and `~/.config/opencode/skills/**` are generated views unless they are symlinks resolving into one of those source repositories.
+
 When changing an existing installed skill:
 
 1. Identify the source repository from the user's local `SKILLS.md` and repository taxonomy.
