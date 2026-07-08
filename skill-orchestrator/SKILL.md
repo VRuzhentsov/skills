@@ -129,6 +129,8 @@ Prefer class-level umbrella skills with rich `SKILL.md` files. Avoid narrow one-
 
 First-class update signals include user corrections about style, tone, verbosity, formatting, workflow order, missing verification, wrong tool sequence, or source placement. Put durable workflow corrections into the relevant source skill so future sessions start with the corrected behavior, not only in memory.
 
+When a session contains repeated user steering on one artifact workflow, summarize the reusable observations into that domain skill before finishing. Convert concrete corrections into operational rules and verification checks, for example: align generated artifacts to the same section map; avoid duplicated sections; keep narrative-only recognition out of evidence artifacts unless requested; replace vague claims with source-backed wording; and preserve template structure rather than approximating it. Keep the rule general and durable; do not store task-specific file names, dates, ticket IDs, or completed-work logs in the public skill.
+
 If only protected bundled or hub-installed skills would need edits, do not modify them. Report that there is no canonical editable source available.
 
 ## Measured Skill Improvement
