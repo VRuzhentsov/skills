@@ -2,11 +2,12 @@
 
 Open-source skills for ticket workflows and resilient desktop/workstation setup.
 
+> `create-ticket` is intentionally project-local: the target project's `.agents/skills/create-ticket/` owns its ticket-creation behavior. It is not a public repository skill.
+
 This repository intentionally avoids company-specific defaults, private machine assumptions, project keys, domains, internal workflows, and private naming.
 
 ## Included Skills
 
-- `create-ticket` - Create tickets in Jira or GitHub Issues with provider auto-detection and safe fallback payloads.
 - `expectations` - Recover from unmet user expectations and persist the smallest verified behavior change that prevents recurrence.
 - `skill-orchestrator` - Maintain custom skill routing, repository taxonomy, install docs, and publishing boundaries.
 - `skill-ops` - Iteratively optimize a prompt/SOP document against a gradeable task set with a keep/revert loop, tracking editable targets in a machine-local registry.
@@ -25,7 +26,6 @@ npx skills@latest add <owner>/<repo>/<skill-name>
 Known skills:
 
 ```bash
-npx skills@latest add <owner>/<repo>/create-ticket
 npx skills@latest add <owner>/<repo>/expectations
 npx skills@latest add <owner>/<repo>/skill-orchestrator
 npx skills@latest add <owner>/<repo>/skill-ops
@@ -43,13 +43,6 @@ Example prompts after install:
 - "Start ticket https://github.com/owner/repo/issues/123 and draft an implementation plan."
 - "Set up a sustainable home system on Fedora Bazzite so KDE windows, Chrome tabs, and terminal sessions recover after reboot."
 - "Sync this Jira ticket into markdown with references and frontmatter."
-
-## Publish Workflow
-
-1. Run the release checklist in `RELEASE_CHECKLIST.md`.
-2. Package each public skill into `.skill` artifacts.
-3. Commit and push to `main`.
-4. Verify install commands above from a clean environment.
 
 ## Design Principles
 
