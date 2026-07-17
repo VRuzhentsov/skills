@@ -89,14 +89,14 @@ Installed global skill copies are generated runtime artifacts. Do not treat thes
 - `~/.config/opencode/skills/**`
 - `~/.claude/skills/**`
 
-Canonical source repositories follow the user's taxonomy, normally:
+Canonical source repositories follow the user's local taxonomy. The local routing document defines each source root; do not assume a fixed parent directory or checkout layout.
 
-- `~/projects/skills/<skill-name>/SKILL.md` for public personal skills;
-- `~/projects/private-skills/<skill-name>/SKILL.md` for personal/private skills;
-- `~/projects/work-skills/<skill-name>/SKILL.md` for shared organization skills;
-- `~/projects/work-private-skills/<skill-name>/SKILL.md` for private organization skills.
+- `<personal-skills-root>/<skill-name>/SKILL.md` for public personal skills;
+- `<personal-private-skills-root>/<skill-name>/SKILL.md` for personal/private skills;
+- `<team-skills-root>/<skill-name>/SKILL.md` for shared organization skills;
+- `<work-personal-private-skills-root>/<skill-name>/SKILL.md` for private organization skills.
 
-Before concluding a source repo is missing, check the direct taxonomy paths. Broad search can miss expected source files because of search limits, ignored paths, or too-narrow patterns.
+Before concluding a source repo is missing, read the user's local routing document and check the source roots it defines. Broad search can miss expected source files because of search limits, ignored paths, or too-narrow patterns.
 
 Installed paths are generated views unless they are symlinks resolving into one of the canonical source repositories.
 
