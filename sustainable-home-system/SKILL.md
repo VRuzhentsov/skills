@@ -18,6 +18,12 @@ Make a Linux desktop safe to reboot by layering restore mechanisms. This is inte
 
 This skill targets KDE Plasma. Treat other Linux desktops as adaptations of the same model. Keep instructions public-safe: avoid private usernames, machine-specific paths, account details, and personal workflow assumptions unless the current user explicitly asks for them.
 
+## User Systemd Services and Timers
+
+Use `~/.config/systemd/user/` as the primary home for durable user-level automation: long-running background services, scheduled work, timers, socket activation, and service-specific configuration. Prefer user systemd units over user crontab entries or ad-hoc background shell processes when the work should reliably start, stop, restart, or survive login and reboot boundaries.
+
+Track safe unit definitions, drop-ins, and enablement symlinks in the user's configuration repository. Keep credential-bearing environment files and runtime state out of version control.
+
 ## Reality Check
 
 Be explicit about limits:
