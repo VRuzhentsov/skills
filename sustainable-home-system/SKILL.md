@@ -38,6 +38,20 @@ For each configured source checkout, the script should:
 
 Use a persistent daily timer with a small randomized delay. The timer may catch up after a missed run, but it must still apply the same clean-tree and fast-forward-only checks. Do not automatically reinstall generated skill views unless the user explicitly asks for that separate operation; source synchronization and runtime installation are distinct.
 
+### Pinned source-skill submodules
+
+When a workstation must reproduce a fixed set of canonical skill sources as part of its own Git workspace, use ordinary Git submodules rather than filesystem symlinks. The parent repository records each source URL and an exact child commit in `.gitmodules` and its Git index; the children remain independent repositories with their own history and review workflow.
+
+Use the pinned model deliberately:
+
+1. Add each explicit source repository as a submodule tracking its normal branch (usually `main`), then commit the parent’s `.gitmodules` entry and gitlink. The recorded commit—not the branch name—is what a fresh checkout restores.
+2. Synchronize the parent repository first. Once it fast-forwards, run `git submodule sync --recursive` and `git submodule update --init --recursive` to initialize or check out the exact committed child revisions.
+3. Treat any modified, untracked, ahead, or diverged submodule as a dirty parent workspace and skip automatic updates. Never reset, clean, rebase, or force a child checkout to satisfy the parent pin.
+4. To deliberately advance a pin, update and review the child repository through its own workflow, then update the parent’s gitlink in a separate reviewed parent commit. Do not make a scheduler pull child `main` branches directly: that would leave the parent dirty on every child update.
+5. Keep runtime source-routing symlinks separate. A symlink can expose a local source path to an agent, but it is not a portable Git dependency and does not pin a revision.
+
+A migration from already-existing local child checkouts must preserve those directories. Prepare and review the parent submodule commit in an isolated worktree first; activate it in a live checkout only after every existing child is clean and matches, or can safely be checked out to, the recorded remote commit.
+
 ## Reality Check
 
 Be explicit about limits:
