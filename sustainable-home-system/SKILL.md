@@ -45,7 +45,7 @@ When a workstation must reproduce a fixed set of canonical skill sources as part
 Use the pinned model deliberately:
 
 1. Add each explicit source repository as a submodule tracking its normal branch (usually `main`), then commit the parent’s `.gitmodules` entry and gitlink. The recorded commit—not the branch name—is what a fresh checkout restores.
-2. Synchronize the parent repository first. Once it fast-forwards, run `git submodule sync --recursive` and `git submodule update --init --recursive` to initialize or check out the exact committed child revisions.
+2. Synchronize the parent repository first. After it is already current or fast-forwards, run `git submodule sync --recursive` and `git submodule update --init --recursive` to initialize or check out the exact committed child revisions.
 3. Treat any modified, untracked, ahead, or diverged submodule as a dirty parent workspace and skip automatic updates. Never reset, clean, rebase, or force a child checkout to satisfy the parent pin.
 4. To deliberately advance a pin, update and review the child repository through its own workflow, then update the parent’s gitlink in a separate reviewed parent commit. Do not make a scheduler pull child `main` branches directly: that would leave the parent dirty on every child update.
 5. Keep runtime source-routing symlinks separate. A symlink can expose a local source path to an agent, but it is not a portable Git dependency and does not pin a revision.
