@@ -24,6 +24,20 @@ Use `~/.config/systemd/user/` as the primary home for durable user-level automat
 
 Track safe unit definitions, drop-ins, and enablement symlinks in the user's configuration repository. Keep credential-bearing environment files and runtime state out of version control.
 
+### Safe source-skill synchronization
+
+When a workstation keeps explicit local checkouts of canonical skill-source repositories, use a persistent user systemd timer to refresh them daily. Keep the repository list explicit in a tracked non-secret script; do not scan or pull arbitrary repositories.
+
+For each configured source checkout, the script should:
+
+1. Require a completely clean `git status --porcelain`, including no untracked files. If dirty, log a skip and make no repository change.
+2. Fetch only the configured remote's `main` branch.
+3. Try to switch a clean checkout to its local `main` branch, preserving any feature branch rather than deleting or rewriting it. If local `main` is absent, create it only as a tracking branch of the fetched remote `main`.
+4. Fast-forward `main` only when it is strictly behind the fetched remote. If local `main` is ahead or diverged, log a skip. Never reset, rebase, clean, force-push, create a merge commit, or discard local work.
+5. Report per-repository outcomes and return failure only for operational errors such as a failed fetch or failed safe branch switch.
+
+Use a persistent daily timer with a small randomized delay. The timer may catch up after a missed run, but it must still apply the same clean-tree and fast-forward-only checks. Do not automatically reinstall generated skill views unless the user explicitly asks for that separate operation; source synchronization and runtime installation are distinct.
+
 ## Reality Check
 
 Be explicit about limits:
