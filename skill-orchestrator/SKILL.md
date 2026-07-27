@@ -74,7 +74,7 @@ This skill is suitable for a public/general skill repository. Keep it generic an
 Do not include:
 
 - real usernames, organization names, company names, private repository names, or internal domains;
-- machine-specific absolute paths except generic examples such as `~/projects/<repo>`;
+- machine-specific absolute paths except generic examples such as `<projects-root>/<repo>`;
 - private workflow details, credentials, tokens, keys, or account identifiers;
 - task-specific incident details, ticket identifiers, PR numbers, or internal service names.
 
@@ -211,7 +211,7 @@ Suggested generic config shape:
 ```yaml
 skill_subscriptions:
   - name: personal-skills
-    repo: ~/projects/<skills-repo>
+    repo: <projects-root>/<skills-repo>
     remote: origin
     branch: main
     install_targets: [agent-a, agent-b]
