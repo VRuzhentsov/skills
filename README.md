@@ -17,7 +17,7 @@ This repository intentionally avoids company-specific defaults, private machine 
 
 ## Install
 
-No `make` command or repository-specific install wrapper is required. Install any individual skill by substituting the repository location and its directory name:
+Install any individual skill by substituting the repository location and its directory name:
 
 ```bash
 npx skills@latest add <owner>/<repo>/<skill-name>
