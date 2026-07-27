@@ -17,22 +17,19 @@ This repository intentionally avoids company-specific defaults, private machine 
 
 ## Install
 
-Install any skill directly from this repository by replacing `<owner>`, `<repo>`, and `<skill-name>` with the target repository and skill directory name:
+Install any individual skill by substituting the repository location and its directory name:
 
 ```bash
 npx skills@latest add <owner>/<repo>/<skill-name>
 ```
 
-Known skills:
+From a local clone, run the same skill-agnostic flow from the repository root:
 
 ```bash
-npx skills@latest add <owner>/<repo>/expectations
-npx skills@latest add <owner>/<repo>/skill-orchestrator
-npx skills@latest add <owner>/<repo>/skill-ops
-npx skills@latest add <owner>/<repo>/start-ticket
-npx skills@latest add <owner>/<repo>/sustainable-home-system
-npx skills@latest add <owner>/<repo>/ticket-markdown
+npx skills add . --global --agent <agent-name> --skill <skill-name> --yes
 ```
+
+Replace `<skill-name>` with a directory listed above. The source repository remains canonical; rerun the appropriate command after updating a skill.
 
 ## Quick Start
 
