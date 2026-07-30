@@ -20,15 +20,14 @@ Follow this order:
 
 Do not stop at "I will remember" when a durable instruction, skill, configuration, memory, or mechanical guard is appropriate.
 
-## Denied Commands and Approval Refusals
+## Recovery Completion
 
-When a command or tool request is denied, the stated denial reason is diagnostic evidence, not a completion state.
+An expectation recovery is unfinished until it has a user-visible outcome beyond acknowledgement.
 
-1. Inspect the exact requested operation and the denial reason before reporting that the task is blocked or paused.
-2. State whether the denied behavior actually appears in the request. For example, distinguish a force-push flag or rewrite from an ordinary `git push` that was classified conservatively by an approval analyzer.
-3. Explain the cause, impact, and the narrowest safe next action. Do not hide behind a generic “denied” report when the tool supplied a reason.
-4. Do not retry the same denied operation or work around the approval. If the task can continue safely, split independent actions so approval applies to one concrete action at a time.
-5. For a failed-expectation recovery, produce and verify a durable correction when an existing skill, instruction, evaluation, or mechanical guard can own the lesson. Reporting that no output was created is not completion.
+1. Complete and verify the chosen durable correction before calling the recovery complete.
+2. If the correct persistence surface is unclear or needs the user's decision, present 2–4 concrete options. Each option must name the target surface, the behavior it changes, and how it will be verified; recommend the narrowest suitable option.
+3. If a durable change is genuinely inappropriate, say why, state that recovery remains intentionally limited to the immediate task, and do not describe the result as a completed workflow improvement.
+4. A statement that no skill, evaluation, guardrail, test, instruction, configuration, or automation changed is a status report—not a recovery outcome. Continue the loop or present the concrete improvement options.
 
 ## Choosing Where To Persist
 
