@@ -20,6 +20,16 @@ Follow this order:
 
 Do not stop at "I will remember" when a durable instruction, skill, configuration, memory, or mechanical guard is appropriate.
 
+## Denied Commands and Approval Refusals
+
+When a command or tool request is denied, the stated denial reason is diagnostic evidence, not a completion state.
+
+1. Inspect the exact requested operation and the denial reason before reporting that the task is blocked or paused.
+2. State whether the denied behavior actually appears in the request. For example, distinguish a force-push flag or rewrite from an ordinary `git push` that was classified conservatively by an approval analyzer.
+3. Explain the cause, impact, and the narrowest safe next action. Do not hide behind a generic “denied” report when the tool supplied a reason.
+4. Do not retry the same denied operation or work around the approval. If the task can continue safely, split independent actions so approval applies to one concrete action at a time.
+5. For a failed-expectation recovery, produce and verify a durable correction when an existing skill, instruction, evaluation, or mechanical guard can own the lesson. Reporting that no output was created is not completion.
+
 ## Choosing Where To Persist
 
 Choose the smallest surface that will actually be available in future relevant work:
