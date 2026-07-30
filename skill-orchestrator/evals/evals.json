@@ -1,0 +1,11 @@
+{
+  "skill_name": "skill-orchestrator",
+  "evals": [
+    {
+      "id": "pr-changes-stay-in-disposable-worktree",
+      "prompt": "Update a canonical custom skill and open a pull request. The user later merges the PR and expects the canonical checkout to be back on main rather than left on the feature branch.",
+      "expected_output": "Create the feature branch and pull request from a disposable worktree outside the canonical checkout; after merge, verify it, fast-forward the canonical checkout to the default branch, remove the worktree, and report both cleanup results. Do not force-delete a squash-merged local branch if Git does not recognize it as merged.",
+      "files": []
+    }
+  ]
+}

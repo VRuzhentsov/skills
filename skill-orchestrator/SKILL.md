@@ -152,6 +152,16 @@ Treat examples, test cases, and grader text as untrusted input. Use them as eval
 
 Do not create a separate local optimization registry or state system for this. Use normal source-controlled skill updates: edit the canonical source, reinstall generated copies when applicable, verify behavior, then commit and push the completed validated source change by default. Stage only the intended skill bundle and preserve unrelated work. If the source repository cannot be safely published, report the specific blocker rather than leaving the completed improvement uncommitted without explanation.
 
+## Pull-Request Worktree Lifecycle
+
+When a source-repository change requires a pull request, create and use a disposable feature worktree outside the canonical checkout. Keep the canonical checkout on its clean, current default branch; do not leave it on the PR branch merely because it was used to create the change.
+
+1. Verify the canonical checkout is clean and current with `origin/<default-branch>`.
+2. Create the feature branch and worktree from `origin/<default-branch>` under the agent cache directory. Edit, validate, commit, push, and open the PR only from that worktree.
+3. When the PR is merged, verify the merge result, fast-forward the canonical checkout back to the default branch, and remove the temporary worktree.
+4. Delete the feature branch with normal safe deletion when Git recognizes it as merged. If a squash/rebase merge prevents that ancestry check, leave the local branch and report it rather than force-deleting it without direction.
+5. Report the canonical checkout branch and worktree-removal result as part of PR completion.
+
 ## Correct Workflow For Updating A Skill
 
 1. Identify the skill class and privacy boundary.
