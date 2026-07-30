@@ -20,6 +20,15 @@ Follow this order:
 
 Do not stop at "I will remember" when a durable instruction, skill, configuration, memory, or mechanical guard is appropriate.
 
+## Recovery Completion
+
+An expectation recovery is unfinished until it has a user-visible outcome beyond acknowledgement.
+
+1. Complete and verify the chosen durable correction before calling the recovery complete.
+2. If the correct persistence surface is unclear or needs the user's decision, present 2–4 concrete options. Each option must name the target surface, the behavior it changes, and how it will be verified; recommend the narrowest suitable option.
+3. If a durable change is genuinely inappropriate, say why, state that recovery remains intentionally limited to the immediate task, and do not describe the result as a completed workflow improvement.
+4. A statement that no skill, evaluation, guardrail, test, instruction, configuration, or automation changed is a status report—not a recovery outcome. Continue the loop or present the concrete improvement options.
+
 ## Choosing Where To Persist
 
 Choose the smallest surface that will actually be available in future relevant work:
