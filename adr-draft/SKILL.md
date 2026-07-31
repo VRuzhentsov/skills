@@ -22,15 +22,42 @@ Do not create an ADR for routine implementation within an established pattern, a
 
 Before drafting or changing an ADR:
 
-1. Read repository guidance and search for ADR locations, including `docs/adr/`, `docs/decisions/`, `architecture/adr/`, and `.adr-dir`.
+1. Read repository guidance and search for an existing `docs/adr/` directory.
 2. Read the closest one to three ADRs, any ADR index, and relevant project instructions.
-3. Determine the established directory, numbering, filename, H1 style, metadata, status vocabulary, language, and heading structure.
+3. Determine the established directory, numbering, filename, H1 style, frontmatter fields, status vocabulary, language, and heading structure.
 4. Inspect the underlying decision evidence: relevant code, tests, issue or specification, operational constraints, and authoritative external documentation when applicable.
 5. Identify whether the request creates a new record, revises a proposed record, or changes a previous decision.
 
-Existing repository convention is authoritative. Do not impose a new location, title format, frontmatter, template, or status model when the repository already has one. Surface conflicts in the available evidence instead of guessing.
+Existing repository convention is authoritative for location, naming, headings, and the values or extra fields used in frontmatter. YAML frontmatter itself is required for every ADR Markdown file created or materially revised through this skill. Surface conflicts in the available evidence instead of guessing.
 
-If no convention exists, use `docs/adr/NNNN-short-kebab-title.md`, start at `0001`, continue zero-padded numbering, and title it `# NNNN — Decision title`. Keep metadata minimal unless the repository has a metadata convention.
+If no convention exists, use `docs/adr/NNNN-short-kebab-title.md`, start at `0001`, continue zero-padded numbering, and title it `# NNNN — Decision title`.
+
+## Required YAML frontmatter
+
+Every ADR Markdown file created or materially revised through this skill begins with valid YAML frontmatter. Frontmatter makes status, ownership, relationships, and discovery machine-readable without replacing the human decision narrative.
+
+Preserve an established metadata schema when one exists, but ensure it includes at least these fields:
+
+```yaml
+---
+title: "NNNN — Decision title"
+status: Proposed
+date: YYYY-MM-DD
+deciders: []
+tags: [architecture, decision]
+supersedes: []
+superseded_by: []
+---
+```
+
+- `title` matches the ADR H1 after its `# ` prefix.
+- `status` uses the repository's status vocabulary and agrees with the body. Use `Proposed` until the decision is actually made.
+- `date` is the ISO 8601 date the record is created or materially revised. Do not fabricate a historical decision date.
+- `deciders` identifies named roles or people only when evidenced; use an empty list when unknown.
+- `tags` contains `architecture` and `decision` plus any repository-standard tags.
+- `supersedes` and `superseded_by` contain ADR identifiers or paths only when the relationship exists; otherwise keep empty lists.
+
+Do not insert a second metadata block. For an existing ADR without frontmatter, add the required frontmatter as part of a material revision or newly approved update. A read-only review should report the missing metadata rather than silently rewriting history.
 
 ## Capture decision inputs
 
@@ -55,6 +82,16 @@ Use diagrams, pseudocode, interfaces, commands, schemas, or code snippets when t
 A complete technical ADR commonly contains the following material. Adapt headings to the repository rather than adding every heading mechanically:
 
 ```markdown
+---
+title: "NNNN — Decision title"
+status: Proposed
+date: YYYY-MM-DD
+deciders: []
+tags: [architecture, decision]
+supersedes: []
+superseded_by: []
+---
+
 # NNNN — Decision title
 
 ## Status
@@ -116,8 +153,8 @@ For a confirmed write:
 
 1. Create or update only the intended ADR and any established index.
 2. Preserve unrelated documents and existing history.
-3. Re-read the final Markdown and confirm links, numbering, status references, and supersession links are internally consistent.
-4. Run the repository's documentation checks when available. At minimum, run `git diff --check`.
+3. Re-read the final Markdown and confirm that it begins with valid YAML frontmatter, all required fields are present, frontmatter title and status agree with the body, and links, numbering, and supersession links are internally consistent.
+4. Run the repository's documentation checks when available. At minimum, parse the frontmatter as YAML and run `git diff --check`.
 5. Report the path, status, decision, evidence or limitations, follow-up items, and checks actually run.
 
 ## Public-safe reference patterns

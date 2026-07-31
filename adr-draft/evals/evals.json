@@ -4,10 +4,11 @@
     {
       "id": "preserve-existing-technical-adr-convention",
       "prompt": "Create an ADR for a repository that already stores records in docs/adr as 0001-kebab-title.md with an H1 of '# 0001 — Title'. The decision introduces a transport-neutral protocol with an adapter interface, a simulated transport for CI, real-hardware limits, and deferred encryption. The user supplied an existing ADR that has nested Decision subsections and no frontmatter.",
-      "expected_output": "Inspects and preserves the existing path, numbering, H1, and heading convention rather than imposing a new template or frontmatter. Produces a technically detailed proposed ADR with nested decision sections, a decision-relevant interface or diagram, rejected alternatives, deliberate non-goals, scoped status text, embedded verification evidence, stated test limitations, and candid consequences.",
+      "expected_output": "Inspects and preserves the existing path, numbering, H1, and heading convention while adding one valid YAML frontmatter block with the required metadata. Produces a technically detailed proposed ADR with nested decision sections, a decision-relevant interface or diagram, rejected alternatives, deliberate non-goals, scoped status text, embedded verification evidence, stated test limitations, and candid consequences.",
       "files": [],
       "expectations": [
         "The output preserves docs/adr/NNNN-kebab-title.md and '# NNNN — Title' rather than forcing a different default.",
+        "The ADR starts with one valid YAML frontmatter block containing title, status, date, deciders, tags, supersedes, and superseded_by.",
         "The Decision section explains architecture boundaries and rejected alternatives rather than only naming the selected technology.",
         "The draft distinguishes completed proof from unavailable hardware or environment validation.",
         "The draft includes explicit non-goals or deferred work and a condition for revisiting them when known."
@@ -16,11 +17,11 @@
     {
       "id": "supersede-an-accepted-decision-with-history",
       "prompt": "Our repository has an accepted ADR selecting a single database. New requirements make a different storage approach necessary. Draft the decision record and update the ADR relationship without erasing history. The repository uses an ADR index and says records should be brief unless implementation detail affects the decision.",
-      "expected_output": "Discovers the existing convention, creates a new ADR with the next number, preserves the old record, explicitly records the supersession relationship, updates the existing index in its format, describes decision drivers and alternatives, and separates the accepted direction from future migration validation.",
+      "expected_output": "Discovers the existing convention, creates a new ADR with the next number and valid required YAML frontmatter, preserves the old record, explicitly records the supersession relationship in frontmatter and body, updates the existing index in its format, describes decision drivers and alternatives, and separates the accepted direction from future migration validation.",
       "files": [],
       "expectations": [
         "The old ADR remains present and is not rewritten away or deleted.",
-        "The new record and index communicate the supersession relationship consistently.",
+        "The new record, required frontmatter, and index communicate the supersession relationship consistently.",
         "The draft includes concrete migration or compatibility consequences and follow-up validation.",
         "The response does not claim implementation or tests passed without evidence."
       ]
