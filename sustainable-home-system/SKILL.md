@@ -24,33 +24,23 @@ Use `~/.config/systemd/user/` as the primary home for durable user-level automat
 
 Track safe unit definitions, drop-ins, and enablement symlinks in the user's configuration repository. Keep credential-bearing environment files and runtime state out of version control.
 
-### Safe source-skill synchronization
+### Git source synchronization
 
-When a workstation keeps explicit local checkouts of canonical skill-source repositories, use a persistent user systemd timer to refresh them daily. Keep the repository list explicit in a tracked non-secret script; do not scan or pull arbitrary repositories.
+The executable `skill-git-sync` feature is owned by the separate
+`sustainable-home` repository. It is optional and distinct from that
+repository's `git-submodules` feature. This skill consumes the source feature;
+it does not own a duplicate script, timer, or test suite.
 
-For each configured source checkout, the script should:
+When configuring the feature on a workstation, read that repository’s README,
+copy its tracked home payload into the corresponding home paths, enable its
+user timer, and run its synthetic test suite. Keep source changes, scenario
+tests, and the provisioning contract in `sustainable-home`.
 
-1. Require a completely clean `git status --porcelain`, including no untracked files. If dirty, log a skip and make no repository change.
-2. Fetch only the configured remote's `main` branch.
-3. Try to switch a clean checkout to its local `main` branch, preserving any feature branch rather than deleting or rewriting it. If local `main` is absent, create it only as a tracking branch of the fetched remote `main`.
-4. Fast-forward `main` only when it is strictly behind the fetched remote. If local `main` is ahead or diverged, log a skip. Never reset, rebase, clean, force-push, create a merge commit, or discard local work.
-5. Report per-repository outcomes and return failure only for operational errors such as a failed fetch or failed safe branch switch.
+### Submodule policy
 
-Use a persistent daily timer with a small randomized delay. The timer may catch up after a missed run, but it must still apply the same clean-tree and fast-forward-only checks. Do not automatically reinstall generated skill views unless the user explicitly asks for that separate operation; source synchronization and runtime installation are distinct.
-
-### Pinned source-skill submodules
-
-When a workstation must reproduce a fixed set of canonical skill sources as part of its own Git workspace, use ordinary Git submodules rather than filesystem symlinks. The parent repository records each source URL and an exact child commit in `.gitmodules` and its Git index; the children remain independent repositories with their own history and review workflow.
-
-Use the pinned model deliberately:
-
-1. Add each explicit source repository as a submodule tracking its normal branch (usually `main`), then commit the parent’s `.gitmodules` entry and gitlink. The recorded commit—not the branch name—is what a fresh checkout restores.
-2. Synchronize the parent repository first. After it is already current or fast-forwards, run `git submodule sync --recursive` and `git submodule update --init --recursive` to initialize or check out the exact committed child revisions.
-3. Treat any modified, untracked, ahead, or diverged submodule as a dirty parent workspace and skip automatic updates. Never reset, clean, rebase, or force a child checkout to satisfy the parent pin.
-4. To deliberately advance a pin, update and review the child repository through its own workflow, then update the parent’s gitlink in a separate reviewed parent commit. Do not make a scheduler pull child `main` branches directly: that would leave the parent dirty on every child update.
-5. Keep runtime source-routing symlinks separate. A symlink can expose a local source path to an agent, but it is not a portable Git dependency and does not pin a revision.
-
-A migration from already-existing local child checkouts must preserve those directories. Prepare and review the parent submodule commit in an isolated worktree first; activate it in a live checkout only after every existing child is clean and matches, or can safely be checked out to, the recorded remote commit.
+For the concrete branch and conflict policy, use the `sustainable-home`
+feature documentation. This skill must not maintain a parallel submodule policy
+or implementation.
 
 ## Reality Check
 
