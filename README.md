@@ -10,6 +10,7 @@ This repository intentionally avoids company-specific defaults, private machine 
 
 - `adr-draft` - Draft and manage convention-first, implementation-ready Architecture Decision Records with alternatives, non-goals, lifecycle, and verification evidence.
 - `expectations` - Recover from unmet user expectations and persist the smallest verified behavior change that prevents recurrence.
+- `git-workflow` - Select a verified default-branch or pull-request delivery path for Git work; prevents standalone pushed branches.
 - `skill-orchestrator` - Maintain custom skill routing, repository taxonomy, install docs, and publishing boundaries.
 - `skill-ops` - Iteratively optimize a prompt/SOP document against a gradeable task set with a keep/revert loop, tracking editable targets in a machine-local registry.
 - `start-ticket` - Turn an existing ticket into a concrete implementation plan with clarifying questions and repo exploration.
