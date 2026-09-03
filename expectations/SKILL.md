@@ -13,12 +13,25 @@ Follow this order:
 
 1. State the missed expectation in concrete terms.
 2. Complete or repair the immediate user-visible task when it is still outstanding.
-3. Identify the behavior change that would have prevented the miss.
-4. Apply that change at the narrowest appropriate durable surface.
-5. Verify the changed instruction, skill, memory, configuration, or automation.
-6. Briefly state what changed and where.
+3. When the user asks why the miss happened, diagnose the causal decision path from available evidence.
+4. Identify the behavior change that would have prevented the miss.
+5. Apply that change at the narrowest appropriate durable surface.
+6. Verify the changed instruction, skill, memory, configuration, or automation.
+7. Briefly state what changed and where.
 
 Do not stop at "I will remember" when a durable instruction, skill, configuration, memory, or mechanical guard is appropriate.
+
+## Root-Cause Diagnosis
+
+When the expectation gap includes "why did you do this?", "what led you to this?", or a request for the instructions behind a wrong action, diagnose before choosing the durable fix.
+
+- Treat "I did not follow X", "I overlooked X", and "I should have done X" as descriptions of the mismatch, not root causes.
+- Reconstruct the positive decision path from available evidence: a competing instruction or memory, assumed scope, heuristic, evidence weighting, stale state, or unsupported inference that made the wrong action appear applicable.
+- Name the technical source of relevant instructions or state when available: task-local prompt, workspace instruction, repository rule, skill and path, memory, tool result, configuration, or other loaded context.
+- Explain the causal link: what was treated as applicable or higher priority, why it appeared applicable, and how that displaced or mis-scoped the user's intended instruction.
+- Separate observed evidence from reconstruction. If the actual causal path cannot be established, state what is known and label the rest as inference. Do not fabricate an internal trace or a confident post-hoc explanation.
+
+The purpose is diagnosis, not self-defense. Keep apology or evaluation secondary to the causal answer unless the user asks for them.
 
 ## Recovery Completion
 
@@ -64,6 +77,7 @@ Verify both the write and the future read path:
 
 Keep the closeout direct:
 
+- When the user asked why, lead with the diagnosed cause, its source, and the causal link. Do not substitute "I didn't follow X" for a root-cause answer.
 - Acknowledge the expectation without defensiveness.
 - Separate the immediate repair from the durable behavior change.
 - Name changed files, commands, or commits when applicable.
