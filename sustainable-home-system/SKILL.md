@@ -1,6 +1,6 @@
 ---
 name: sustainable-home-system
-description: Configure a resilient KDE Plasma home workstation so terminal sessions, desktop windows, browser tabs, and selected app workspaces recover after accidental closes, logout/login, reboot, or crash as much as Linux realistically allows. Use this skill whenever the user wants a sustainable desktop/home system, worries about losing workflow after reboot, wants KDE session restore, browser tab restore, tmux terminal persistence, or wants to reproduce this setup on another KDE Plasma machine.
+description: Use when reproducing or propagating durable KDE, home-directory, Hermes, or workstation configuration, and for session/browser/tmux recovery or sustainable bootstrap. Coordinate with workspace synchronization when multiple governed workspaces are involved.
 ---
 
 # Sustainable Home System
@@ -17,6 +17,8 @@ Make a Linux desktop safe to reboot by layering restore mechanisms. This is inte
 - Terminal recovery must preserve the user's visual profile. Do not replace a dark/translucent terminal with a light default profile.
 
 This skill targets KDE Plasma. Treat other Linux desktops as adaptations of the same model. Keep instructions public-safe: avoid private usernames, machine-specific paths, account details, and personal workflow assumptions unless the current user explicitly asks for them.
+
+When durable workstation or Hermes configuration is propagated among governed workspace repositories, also load the applicable workspace-synchronization skill. Complete its Feature declaration, state/history, authority/provider classification, verification, and repository-delivery steps instead of stopping after copying configuration files.
 
 ## User Systemd Services and Timers
 
