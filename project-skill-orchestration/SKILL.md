@@ -7,8 +7,6 @@ description: Set up or audit the skill orchestration architecture inside a proje
 
 Use this skill to shape how agent skills are organized inside one project. It prescribes the architecture only: one entry skill, scoped skills, routing, and single sources of truth. Each project defines its own rules inside that structure.
 
-For the workstation-level custom skill ecosystem (skill repositories, installation, publishing), use `skill-orchestrator` instead.
-
 ## One Entry Skill
 
 - Give each project one main entry skill at `.agents/skills/dev/SKILL.md`.
